@@ -1,0 +1,147 @@
+:root {
+  --bg: #f3f3f5;
+  --card: #ffffff;
+  --text: #1b1b1f;
+  --muted: #6b6b75;
+  --line: #e2e2e7;
+  --accent: #0078d4;
+  --accent-text: #ffffff;
+  --high: #c4314b;
+  --mid: #c77700;
+  --low: #5b7f95;
+  --wait: #fff4ce;
+  --wait-text: #6b5300;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111114;
+    --card: #1e1e23;
+    --text: #ececf1;
+    --muted: #9a9aa6;
+    --line: #2e2e35;
+    --accent: #3a96dd;
+    --high: #ff6b81;
+    --mid: #f0a43a;
+    --low: #8db3c9;
+    --wait: #3a3214;
+    --wait-text: #f3d77a;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  padding: 0 max(16px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(16px, env(safe-area-inset-left));
+}
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+[hidden] { display: none !important; }
+
+.bar {
+  position: sticky; top: 0; z-index: 5;
+  display: flex; align-items: center; gap: 8px;
+  margin: 0 -16px; padding: calc(env(safe-area-inset-top) + 8px) 16px 8px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+.bar h1 { font-size: 20px; margin: 0; flex: 1; }
+.stamp { color: var(--muted); font-size: 13px; }
+.icon {
+  border: 0; background: none; font-size: 20px; width: 40px; height: 40px; border-radius: 20px;
+}
+.icon:active { background: var(--line); }
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.primary {
+  border: 0; border-radius: 12px; background: var(--accent); color: var(--accent-text);
+  padding: 10px 16px; font-weight: 600;
+}
+.btn {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--card);
+  padding: 10px; min-height: 44px; text-align: center;
+}
+.btn:active, .primary:active { opacity: .7; }
+
+.login { background: var(--card); border-radius: 14px; padding: 16px; margin: 8px 0 12px; }
+.login p { margin: 0 0 12px; }
+
+.capture { display: grid; gap: 8px; margin: 8px 0 12px; }
+.note { display: flex; gap: 8px; align-items: flex-end; }
+.note textarea {
+  flex: 1; resize: none; max-height: 40vh; min-height: 44px;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--card);
+  padding: 10px 12px; font-size: 17px; /* ≥16px, sonst zoomt iOS beim Fokus */
+}
+.note .primary { min-width: 48px; min-height: 44px; }
+.actions { display: flex; gap: 8px; }
+
+.pending {
+  background: var(--wait); color: var(--wait-text); border-radius: 12px;
+  padding: 10px 12px; margin-bottom: 12px; font-size: 14px;
+}
+.pending ul { margin: 6px 0 0; padding-left: 18px; }
+
+.filter { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.seg { display: flex; background: var(--line); border-radius: 10px; padding: 2px; }
+.seg button { border: 0; background: none; padding: 6px 12px; border-radius: 8px; font-size: 14px; white-space: nowrap; }
+.seg button.on { background: var(--card); font-weight: 600; }
+.seg span { color: var(--muted); font-weight: 400; }
+.filter input {
+  flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card);
+  padding: 6px 10px; font-size: 16px;
+}
+
+.list { list-style: none; margin: 0; padding: 0 0 24px; display: grid; gap: 8px; }
+.task {
+  display: flex; gap: 10px; align-items: center;
+  background: var(--card); border-radius: 14px; padding: 10px 12px 10px 6px;
+}
+.check {
+  flex: none; width: 40px; height: 40px; border: 0; background: none; padding: 8px;
+}
+.check i {
+  display: block; width: 24px; height: 24px; border-radius: 12px; border: 2px solid var(--muted);
+  font-style: normal; font-size: 15px; line-height: 20px; text-align: center; color: var(--accent-text);
+}
+.task.done .check i { background: var(--accent); border-color: var(--accent); }
+.task.waiting .check i { border-style: dashed; }
+.task .body { flex: 1; min-width: 0; }
+.task .title { font-weight: 600; overflow-wrap: anywhere; }
+.task.done .title { color: var(--muted); text-decoration: line-through; }
+.task .meta { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.task img, .task .thumb {
+  flex: none; width: 52px; height: 52px; border-radius: 8px; object-fit: cover; background: var(--line);
+}
+.prio-1 { color: var(--high); font-weight: 600; }
+.prio-2 { color: var(--mid); font-weight: 600; }
+.prio-3 { color: var(--low); }
+.tag { color: var(--accent); }
+.empty { text-align: center; color: var(--muted); margin: 32px 0; }
+
+.sheet {
+  width: 100%; max-width: 640px; max-height: 92vh; margin: auto auto 0; padding: 0 16px calc(16px + env(safe-area-inset-bottom));
+  border: 0; border-radius: 18px 18px 0 0; background: var(--card); color: var(--text);
+}
+.sheet::backdrop { background: rgb(0 0 0 / .4); }
+.sheet-head { position: sticky; top: 0; display: flex; justify-content: flex-end; padding-top: 8px; background: var(--card); }
+.sheet h2 { font-size: 20px; margin: 0 0 6px; overflow-wrap: anywhere; }
+.sheet .meta { color: var(--muted); font-size: 14px; margin-bottom: 12px; }
+.sheet .full { display: block; margin-bottom: 12px; }
+.sheet .full img { width: 100%; border-radius: 10px; background: var(--line); }
+.sheet pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; margin: 0 0 16px; }
+.sheet .primary { width: 100%; }
+
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom));
+  max-width: calc(100% - 32px); background: #1b1b1f; color: #fff; border-radius: 12px;
+  padding: 10px 14px; display: flex; gap: 14px; align-items: center; z-index: 20; font-size: 15px;
+  box-shadow: 0 6px 20px rgb(0 0 0 / .25);
+}
+.toast button { border: 0; background: none; color: #7cc4ff; font-weight: 600; padding: 0; }

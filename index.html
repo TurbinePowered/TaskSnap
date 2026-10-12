@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>TaskSnap</title>
+  <meta name="theme-color" content="#0078d4">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="TaskSnap">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="icon" href="icon-192.png">
+  <link rel="stylesheet" href="style.css">
+  <script src="vendor/msal-browser.min.js"></script>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="bar">
+    <h1>TaskSnap</h1>
+    <span id="stamp" class="stamp"></span>
+    <button id="refresh" class="icon" title="Aktualisieren" aria-label="Aktualisieren">⟳</button>
+    <button id="account" class="icon" title="Konto" aria-label="Konto">⚙</button>
+  </header>
+
+  <main>
+    <section id="login" class="login" hidden>
+      <p>Mit dem <b>privaten</b> Microsoft-Konto anmelden, in dessen OneDrive der Ordner <code>TaskSnap</code> liegt.</p>
+      <button id="login-btn" class="primary">Anmelden</button>
+    </section>
+
+    <section id="capture" class="capture">
+      <div class="note">
+        <textarea id="note" rows="1" placeholder="Schnelle Notiz … (1. Zeile = Titel)"></textarea>
+        <button id="send" class="primary" aria-label="Speichern">➤</button>
+      </div>
+      <div class="actions">
+        <label class="btn">📷 Bild wählen<input id="file" type="file" accept="image/*" multiple hidden></label>
+        <button id="paste" class="btn">📋 Bild einfügen</button>
+      </div>
+    </section>
+
+    <section id="pending" class="pending" hidden></section>
+
+    <nav class="filter">
+      <div class="seg" role="tablist">
+        <button data-view="offen" class="on">Offen <span id="count-open"></span></button>
+        <button data-view="erledigt">Erledigt <span id="count-done"></span></button>
+      </div>
+      <input id="search" type="search" placeholder="Suchen" aria-label="Suchen">
+    </nav>
+
+    <ul id="list" class="list"></ul>
+    <p id="empty" class="empty" hidden></p>
+  </main>
+
+  <dialog id="detail" class="sheet">
+    <form method="dialog" class="sheet-head">
+      <button class="icon" aria-label="Schließen">✕</button>
+    </form>
+    <div id="detail-body"></div>
+  </dialog>
+
+  <div id="toast" class="toast" hidden></div>
+</body>
+</html>
