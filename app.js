@@ -89,7 +89,8 @@ const pca = DEMO ? null : new msal.PublicClientApplication({
   cache: { cacheLocation: "localStorage" }, // PWA auf dem Home-Bildschirm hat eigenen Speicher
 });
 
-const account = () => pca?.getActiveAccount() ?? pca?.getAllAccounts()[0] ?? null;
+let msalReady = false; // MSAL wirft, wenn es vor initialize() gefragt wird
+const account = () => (msalReady ? pca.getActiveAccount() ?? pca.getAllAccounts()[0] ?? null : null);
 
 async function accessToken() {
   const acc = account();
@@ -613,6 +614,7 @@ async function start() {
   render();
 
   await pca.initialize();
+  msalReady = true;
   try {
     const result = await pca.handleRedirectPromise();
     if (result?.account) pca.setActiveAccount(result.account);
@@ -629,4 +631,4 @@ async function start() {
   await refresh();
 }
 
-start();
+start().catch((e) => toast(`Startfehler: ${e.message}`));
