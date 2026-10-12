@@ -502,10 +502,33 @@ function renderPending() {
   if (waitingUpload.length) lines.push(`📤 ${waitingUpload.length} noch nicht hochgeladen (keine Verbindung oder Anmeldung)`);
   if (waitingPc.length) lines.push(`⏳ ${waitingPc.length} im Eingang – wird zur Aufgabe, sobald TaskSnap am PC läuft`);
   if (commands) lines.push(`↻ ${commands} Statusänderung${commands > 1 ? "en" : ""} noch nicht am PC übernommen`);
-  const items = [...waitingUpload.map((e) => describe(e.name, e.label)), ...waitingPc.map((n) => describe(n, labels[n]))];
+  const items = [
+    ...waitingUpload.map((e) => ({ name: e.name, text: describe(e.name, e.label), uploaded: false })),
+    ...waitingPc.map((n) => ({ name: n, text: describe(n, labels[n]), uploaded: true })),
+  ];
   box.replaceChildren(
     ...lines.map((l) => h("div", {}, l)),
-    items.length ? h("ul", {}, items.slice(0, 5).map((t) => h("li", {}, t)), items.length > 5 ? h("li", {}, "…") : null) : null);
+    items.length ? h("ul", {}, items.map((item) => h("li", {},
+      h("span", {}, item.text),
+      h("button", { class: "discard", "aria-label": "Verwerfen", onclick: () => discard(item) }, "✕")))) : null);
+}
+
+// Noch nicht übernommene Einträge zurückholen: aus der Warteschlange oder aus dem Eingang löschen
+async function discard(item) {
+  if (!confirm(`„${item.text}“ verwerfen?`)) return;
+  if (!item.uploaded) {
+    await outboxDelete(item.name);
+    await loadOutbox();
+  } else if (!DEMO) {
+    try {
+      await graph(itemUrl(`Eingang/${item.name}`), { method: "DELETE" });
+    } catch (e) {
+      if (!(e instanceof GraphError && e.status === 404)) { handleError(e); render(); return; } // 404: schon weg
+    }
+  }
+  state.inbox = state.inbox.filter((n) => n !== item.name);
+  render();
+  toast("Verworfen");
 }
 
 function showDetail(task) {
